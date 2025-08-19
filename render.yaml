@@ -1,6 +1,9 @@
 services:
-  - type: background_worker
-    name: telegram-bot
+  - type: web
+    name: my-app
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python bot.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: "10000"
