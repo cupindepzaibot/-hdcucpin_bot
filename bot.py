@@ -1,8 +1,7 @@
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import Message, CallbackQuery
-from aiogram.client import DefaultBotProperties
+from aiogram.types import Message, CallbackQuery, ParseMode
 from datetime import datetime
 import sqlite3
 
@@ -12,7 +11,7 @@ ADMIN_ID = 7903231043   # Thay bằng Telegram ID admin của bạn
 logging.basicConfig(level=logging.INFO)
 
 # Khởi tạo Bot với các thuộc tính mặc định
-bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
+bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
 
 # Khởi tạo Dispatcher
 dp = Dispatcher()
@@ -213,7 +212,7 @@ async def process_new_product(message: Message):
         name, category, price = message.text.split("\n")
         price = int(price.strip().replace("VNĐ", "").replace(",", "").strip())
         cur.execute("INSERT INTO products (name, category, price) VALUES (?, ?, ?)", (name, category, price))
-        conn.commit(
+        conn.commit()
         await message.answer(f"✅ Đã thêm sản phẩm: {name} ({category}) - {price} VNĐ")
     except ValueError:
         await message.answer("❌ Định dạng không hợp lệ. Vui lòng gửi lại theo định dạng:\n\n"
