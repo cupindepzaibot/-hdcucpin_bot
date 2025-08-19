@@ -5,8 +5,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import asyncio
 
-API_TOKEN = "YOUR_BOT_TOKEN"
-ADMIN_ID = 123456789   # Thay bằng Telegram ID admin
+API_TOKEN = "8263184362:AAF53GdU6kyOyVJeLc_bYTHtivjRBHL0xWA"
+ADMIN_ID = 7903231043  # Thay bằng Telegram ID admin của bạn
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN, parse_mode="HTML")
