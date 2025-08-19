@@ -1,10 +1,12 @@
 import logging
-from aiogram import Bot, Dispatcher
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
-from datetime import datetime
-import sqlite3
+from aiogram import Bot
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 
-API_TOKEN = "8263184362:AAF53GdU6kyOyVJeLc_bYTHtivjRBHL0xWA"
+bot = Bot(
+    token=API_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 ADMIN_ID = 7903231043   # Thay bằng Telegram ID admin của bạn
 
 logging.basicConfig(level=logging.INFO)
