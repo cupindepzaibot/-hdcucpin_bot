@@ -1,22 +1,47 @@
 import logging
-from aiogram import Bot
+import asyncio
+from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart
+from aiogram.types import Message
+from dotenv import load_dotenv
+import os
 
+# Tải các biến môi trường từ tệp .env
+load_dotenv()
+
+# Lấy mã thông báo API từ biến môi trường
+API_TOKEN = os.getenv("API_TOKEN")
+
+# Cấu hình logging
+logging.basicConfig(level=logging.INFO)
+
+# Khởi tạo bot với cấu hình mặc định
 bot = Bot(
     token=API_TOKEN,
     default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
-ADMIN_ID = 7903231043   # Thay bằng Telegram ID admin của bạn
-
-logging.basicConfig(level=logging.INFO)
-
-# Khởi tạo Bot với các thuộc tính mặc định
-bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
 
 # Khởi tạo Dispatcher
 dp = Dispatcher()
-dp.bot = bot
+
+# Xử lý lệnh /start
+@dp.message(CommandStart())
+async def cmd_start(message: Message) -> None:
+    await message.answer(f"Chào bạn, {html.bold(message.from_user.full_name)}!")
+
+# Xử lý tin nhắn
+@dp.message()
+async def echo_handler(message: Message) -> None:
+    await message.answer(f"Bạn đã gửi: {message.text}")
+
+# Hàm chính để chạy bot
+async def main() -> None:
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
 
 # =======================
 # 📂 Database
