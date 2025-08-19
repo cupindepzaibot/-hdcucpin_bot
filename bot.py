@@ -1,7 +1,8 @@
 import logging
-from aiogram.client import Bot, DefaultBotProperties
+from aiogram import Bot, Dispatcher
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import Message, CallbackQuery
+from aiogram.client.default import DefaultBotProperties
 from datetime import datetime
 
 API_TOKEN = "8263184362:AAF53GdU6kyOyVJeLc_bYTHtivjRBHL0xWA"
