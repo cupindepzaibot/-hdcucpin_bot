@@ -1,7 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import Message, CallbackQuery, ParseMode
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 from datetime import datetime
 import sqlite3
 
