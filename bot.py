@@ -213,7 +213,7 @@ async def process_new_product(message: Message):
         name, category, price = message.text.split("\n")
         price = int(price.strip().replace("VNĐ", "").replace(",", "").strip())
         cur.execute("INSERT INTO products (name, category, price) VALUES (?, ?, ?)", (name, category, price))
-        conn.commit()
+        conn.commit(
         await message.answer(f"✅ Đã thêm sản phẩm: {name} ({category}) - {price} VNĐ")
     except ValueError:
         await message.answer("❌ Định dạng không hợp lệ. Vui lòng gửi lại theo định dạng:\n\n"
