@@ -1,14 +1,12 @@
 import logging
 import sqlite3
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
+import asyncio
 
-# =====================
-# 📍 Cập nhật Token và Admin ID
-# =====================
-API_TOKEN = "8263184362:AAF53GdU6kyOyVJeLc_bYTHtivjRBHL0xWA"  # Thay thế bằng Token của bạn
-ADMIN_ID = 7903231043   # Thay thế bằng ID của bạn
+API_TOKEN = "YOUR_BOT_TOKEN"
+ADMIN_ID = 123456789   # Thay bằng Telegram ID admin
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN, parse_mode="HTML")
@@ -20,7 +18,6 @@ dp = Dispatcher(bot)
 conn = sqlite3.connect("database.sqlite")
 cur = conn.cursor()
 
-# Tạo bảng người dùng, sản phẩm và đơn hàng nếu chưa có
 cur.execute("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
@@ -48,6 +45,7 @@ CREATE TABLE IF NOT EXISTS orders (
 """)
 conn.commit()
 
+
 # =====================
 # ⚡ Helpers
 # =====================
@@ -71,6 +69,7 @@ def get_products(category=None):
         cur.execute("SELECT DISTINCT category FROM products")
     return cur.fetchall()
 
+
 # =====================
 # 📌 Start command
 # =====================
@@ -89,6 +88,7 @@ async def start_cmd(message: types.Message):
     balance = get_balance(message.from_user.id)
     await message.answer(f"👋 Xin chào <b>@{message.from_user.username}</b>\n💰 Số dư: {balance} VNĐ", reply_markup=kb)
 
+
 # =====================
 # 🛒 Cửa hàng
 # =====================
@@ -101,6 +101,7 @@ async def shop_menu(callback: types.CallbackQuery):
     kb.add(InlineKeyboardButton("⬅️ Quay lại", callback_data="back_main"))
     await callback.message.edit_text("🛒 Chọn danh mục:", reply_markup=kb)
 
+
 @dp.callback_query_handler(lambda c: c.data.startswith("cat_"))
 async def product_list(callback: types.CallbackQuery):
     category = callback.data.split("_", 1)[1]
@@ -111,6 +112,7 @@ async def product_list(callback: types.CallbackQuery):
         kb.add(InlineKeyboardButton(f"{p[1]} - {p[2]} VNĐ", callback_data=f"buy_{p[0]}"))
     kb.add(InlineKeyboardButton("⬅️ Quay lại", callback_data="shop"))
     await callback.message.edit_text(f"📦 Sản phẩm trong {category}:", reply_markup=kb)
+
 
 @dp.callback_query_handler(lambda c: c.data.startswith("buy_"))
 async def buy_product(callback: types.CallbackQuery):
@@ -137,6 +139,7 @@ async def buy_product(callback: types.CallbackQuery):
         f"✅ Bạn đã mua <b>{product[0]}</b>\n💰 Số dư còn lại: {get_balance(callback.from_user.id)} VNĐ"
     )
 
+
 # =====================
 # 🏦 Nạp tiền (chỉ demo QR)
 # =====================
@@ -144,6 +147,7 @@ async def buy_product(callback: types.CallbackQuery):
 async def deposit_menu(callback: types.CallbackQuery):
     kb = InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Quay lại", callback_data="back_main"))
     await callback.message.edit_text("🏦 Vui lòng quét QR và gửi bill cho admin để cộng tiền.\n(Chưa tự động hoá)", reply_markup=kb)
+
 
 # =====================
 # 👤 Thông tin
@@ -153,6 +157,7 @@ async def user_info(callback: types.CallbackQuery):
     balance = get_balance(callback.from_user.id)
     kb = InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Quay lại", callback_data="back_main"))
     await callback.message.edit_text(f"👤 ID: {callback.from_user.id}\n@{callback.from_user.username}\n💰 Số dư: {balance} VNĐ", reply_markup=kb)
+
 
 # =====================
 # 🔧 Admin menu
@@ -170,6 +175,7 @@ async def admin_menu(callback: types.CallbackQuery):
     kb.add(InlineKeyboardButton("⬅️ Quay lại", callback_data="back_main"))
     await callback.message.edit_text("🔧 Menu quản trị:", reply_markup=kb)
 
+
 # =====================
 # ⬅️ Quay lại Main menu
 # =====================
@@ -186,8 +192,12 @@ async def back_main(callback: types.CallbackQuery):
     balance = get_balance(callback.from_user.id)
     await callback.message.edit_text(f"👋 Xin chào <b>@{callback.from_user.username}</b>\n💰 Số dư: {balance} VNĐ", reply_markup=kb)
 
+
 # =====================
-# 🚀 Run bot
+# 🚀 Run bot with asyncio
 # =====================
+async def main():
+    await dp.start_polling()
+
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
