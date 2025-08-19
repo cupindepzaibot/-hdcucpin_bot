@@ -8,10 +8,13 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Tải các biến môi trường từ tệp .env
+# Tải các biến môi trường từ tệp .env
+load_dotenv()
 
+# Lấy mã thông báo API từ biến môi trường
 API_TOKEN = os.getenv("API_TOKEN")
 
+# Kiểm tra giá trị của API_TOKEN
 if not API_TOKEN:
     raise ValueError("API_TOKEN is not set. Please check your .env file.")
 
