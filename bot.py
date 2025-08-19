@@ -7,11 +7,15 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from dotenv import load_dotenv
 import os
+import signal
 
-load_dotenv()  # Tải các biến môi trường từ tệp .env
+# Tải các biến môi trường từ tệp .env
+load_dotenv()
 
+# Lấy mã thông báo API từ biến môi trường
 API_TOKEN = os.getenv("API_TOKEN")
 
+# Kiểm tra giá trị của API_TOKEN
 if not API_TOKEN:
     raise ValueError("API_TOKEN is not set. Please check your .env file.")
 
@@ -37,8 +41,21 @@ async def cmd_start(message: Message) -> None:
 async def echo_handler(message: Message) -> None:
     await message.answer(f"Bạn đã gửi: {message.text}")
 
+# Hàm dừng bot khi nhận tín hiệu
+def signal_handler(sig, frame):
+    print('Shutting down...')
+    asyncio.create_task(dp.stop_polling())
+    asyncio.create_task(bot.close())
+
+# Đăng ký tín hiệu dừng
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
 # Hàm chính để chạy bot
 async def main() -> None:
+    # Xóa webhook nếu có
+    await bot.delete_webhook(drop_pending_updates=True)
+    # Bắt đầu nhận cập nhật
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
