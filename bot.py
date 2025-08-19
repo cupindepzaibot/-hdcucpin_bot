@@ -1,6 +1,5 @@
 import logging
-import sqlite3
-from aiogram import Bot, Dispatcher
+from aiogram.client import Bot, DefaultBotProperties
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import Message, CallbackQuery
 from datetime import datetime
@@ -10,8 +9,8 @@ ADMIN_ID = 7903231043   # Thay bằng Telegram ID admin của bạn
 
 logging.basicConfig(level=logging.INFO)
 
-# Khởi tạo Bot
-bot = Bot(token=API_TOKEN, parse_mode="HTML")
+# Khởi tạo Bot với các thuộc tính mặc định
+bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 dp = Dispatcher(bot)
 
 # =======================
